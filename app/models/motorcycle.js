@@ -3,7 +3,15 @@ const { Schema, model } = mongoose
 
 const motorcycleSchema = new Schema(
     {
-        name: {
+        brand: {
+            type: String,
+            required: true
+        },
+        modelName: {
+            type: String,
+            required: true
+        },
+        modelCode: {
             type: String,
             required: true
         },
@@ -23,10 +31,10 @@ const motorcycleSchema = new Schema(
             type: Number,
             required: true
         },
-        owned: {
-            type: Boolean,
-            required: true
-        },
+        owner: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User'
+        }
     }, {
     timestamps: true,
     toObject: { virtuals: true },
