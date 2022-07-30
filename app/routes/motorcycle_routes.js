@@ -17,6 +17,7 @@ const requireOwnership = customErrors.requireOwnership
 
 //remove blank fields from req.body
 const removeBlanks = require('../../lib/remove_blank_fields')
+const motorcycle = require('../models/motorcycle')
 
 
 const requireToken = passport.authenticate('bearer', { session: false })
@@ -48,6 +49,21 @@ router.get('/motorcycles/:id', (req, res, next) => {
         .then(handle404)
         //res 200 and json if successful
         .then((motorcycle) => res.status(200).json({ motorcycle: motorcycle.toObject() }))
+        //pass error
+        .catch(next)
+})
+
+//CREATE------------------------
+//POST /motorcycles
+router.post('/motorcycles', requireToken, (req, res, next) => {
+    //set owner
+    req.body.motorcycle.owner = req.user.id
+
+    Motorcycle.create(req.body.motorcycle)
+        //res status 201 and JSON
+        .then((motorcycle) => {
+            res.status(201).json({ motorcycle: motorcycle.toObject() })
+        })
         //pass error
         .catch(next)
 })
