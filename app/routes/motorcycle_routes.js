@@ -67,3 +67,45 @@ router.post('/motorcycles', requireToken, (req, res, next) => {
         //pass error
         .catch(next)
 })
+
+//UPDATE-------------------
+//PATCH /motorcycles/:id
+router.patch('/motorcycles/:id', requireToken, removeBlanks, (req, res, next) => {
+    // if the client attempts to change the `owner` property by including a new
+    // owner, prevent that by deleting that key/value pair
+    delete req.body.motorcycle.owner
+
+    Motorcycle.findById(req.params.id)
+        .then(handle404)
+        .then((motorcycle) => {
+            // pass req and onject to requireownership
+            // it will throw an error if the current user isn't the owner
+            requireOwnership(req, motorcycle)
+
+            // pass the result of Mongoose's `.update` to the next `.then`
+            return motorcycle.updateOne(req.body.motorcycle)
+        })
+        // res 204
+        .then(() => res.sendStatus(204))
+        // pass error
+        .catch(next)
+})
+
+//DESTROY----------------------
+//DELETE /motorcycles
+router.delete('/motorcycles/:id', requireToken, (req, res, next) => {
+    Motorcycle.findById(req.params.id)
+        .then(handle404)
+        .then((motorcycle) => {
+
+            requireOwnership(req, motorcycle)
+            // delete if the above didn't throw
+            motorcycle.deleteOne()
+        })
+        // res 204 is successful
+        .then(() => res.sendStatus(204))
+        // if an error occurs, pass it to the handler
+        .catch(next)
+})
+
+module.exports = router
