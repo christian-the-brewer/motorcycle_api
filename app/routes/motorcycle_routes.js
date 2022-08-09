@@ -27,7 +27,7 @@ const router = express.Router()
 
 //INDEX--------------
 //GET /motorcycles
-router.get('motorcycles', (req, res, next) => {
+router.get('/motorcycles', (req, res, next) => {
     Motorcycle.find()
         .populate('owner')
         .then((motorcycles) => {

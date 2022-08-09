@@ -31,6 +31,10 @@ const motorcycleSchema = new Schema(
             type: Number,
             required: true
         },
+        img: {
+            type: String,
+            required: true
+        },
         owner: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'User'
